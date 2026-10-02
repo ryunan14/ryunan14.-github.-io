@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WISMA KELAM — Horor Nusantara</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Press+Start+2P&display=swap');
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#030407;color:#eee;font-family:Arial,sans-serif}
+.page{position:absolute;inset:0;display:none;align-items:center;justify-content:center}.on{display:flex}
+#title{background:radial-gradient(circle,#242530,#090a10 48%,#000)}
+.fog{position:absolute;inset:45% -20% 0;background:linear-gradient(transparent,rgba(210,215,220,.12));filter:blur(20px);animation:drift 8s infinite alternate}
+.moon{position:absolute;right:9%;top:9%;width:130px;height:130px;border-radius:50%;background:#d7d5c6;box-shadow:0 0 60px #aaa;opacity:.35}
+.noise{position:absolute;inset:-50%;opacity:.06;background:repeating-linear-gradient(0deg,#fff 0 1px,transparent 2px 5px);animation:n .15s steps(2) infinite}
+.title{text-align:center;z-index:2}.k{font:9px 'Press Start 2P';letter-spacing:3px;color:#aaa}
+h1{font:clamp(42px,10vw,92px) 'Creepster';color:#d52742;line-height:.9;margin:20px 0;text-shadow:0 4px #480814,0 0 30px #8a1024}
+.sub{font:28px 'Creepster';color:#ccc;margin-bottom:28px}.btn{font:10px 'Press Start 2P';padding:14px 18px;background:#210b11;color:#fff;border:1px solid #b52a42;border-radius:5px;box-shadow:0 4px #5a101c;cursor:pointer}.btn:active{transform:translateY(3px);box-shadow:0 1px #5a101c}
+#menu{background:#08090e}.panel{width:min(900px,94vw);padding:22px;background:#0e0f16;border:1px solid #3d3944;border-radius:8px;box-shadow:0 0 70px #000;z-index:2}.logo{font:38px Creepster;color:#d52b43}.head{display:flex;justify-content:space-between;border-bottom:1px solid #302e38;padding-bottom:15px;gap:10px}.tag{font-size:10px;color:#777;align-self:center}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.box{padding:14px;background:#12131b;border:1px solid #2d2c35;border-radius:6px}.box h3{font:9px 'Press Start 2P';color:#bbb;margin:0 0 10px}.choices{display:flex;gap:7px;flex-wrap:wrap}.choice{padding:9px;background:#191a22;color:#aaa;border:1px solid #393640;border-radius:5px;cursor:pointer;font-weight:bold}.choice.active{background:#41101b;color:#fff;border-color:#c12d46}.mon{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.m{padding:10px 3px;background:#0b0c11;border:1px solid #292830;text-align:center;color:#aaa;font-size:10px}.m b{display:block;color:#ddd;margin-top:5px}.foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:15px}.tip{font-size:11px;color:#777;line-height:1.5}
+#game{background:#060709}.game{position:relative;width:100%;height:100%}canvas{width:100%;height:100%;display:block}.hud{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:5px;pointer-events:none}.hud div{background:#08090dcc;border:1px solid #39363e;padding:8px;border-radius:5px;font:8px 'Press Start 2P';color:#bbb}.hud b{color:#e34b61}
+.touch{position:absolute;bottom:10px;left:10px;right:10px;display:flex;justify-content:space-between;pointer-events:none}.dpad{display:grid;grid-template-columns:50px 50px 50px;grid-template-rows:50px 50px;gap:3px}.touch button{pointer-events:auto;width:50px;height:50px;border:1px solid #666;background:#101117cc;color:#ddd;border-radius:8px;font-weight:bold;touch-action:none}.u{grid-column:2}.l{grid-row:2}.d{grid-column:2;grid-row:2}.r{grid-column:3;grid-row:2}.act{display:flex;gap:5px;align-items:end}
+.overlay{position:absolute;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:9}.overlay.show{display:flex}.dialog{width:min(600px,92vw);background:#0d0e15;border:1px solid #48434d;padding:24px;text-align:center;border-radius:7px}.dialog h2{font:30px Creepster;color:#d72c45;margin:0 0 8px}.dialog p{color:#aaa;line-height:1.5}.row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+@keyframes drift{to{transform:translateX(8%)}}@keyframes n{to{transform:translate(3%,1%)}}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.panel{padding:15px}.tag{display:none}.mon{grid-template-columns:repeat(2,1fr)}.foot{align-items:flex-end}}
+</style>
+</head>
+<body>
+
+<section id="title" class="page on"><div class="moon"></div><div class="fog"></div><div class="noise"></div>
+<div class="title"><div class="k">HORROR ADVENTURE • NUSANTARA</div><h1>WISMA<br>KELAM</h1><div class="sub">PETUALANGAN HOROR INDONESIA</div><button class="btn" id="goMenu">▶ MASUK</button><p style="color:#777;font-size:11px">Cari 6 segel. Buka pintu. Jangan biarkan kewarasanmu habis.</p></div></section>
+
+<section id="menu" class="page"><div class="panel">
+<div class="head"><div class="logo">Wisma Kelam</div><div class="tag">SURVIVAL • EXPLORATION • FOLKLORE</div></div>
+<div class="grid">
+<div class="box"><h3>TINGKAT KESULITAN</h3><div class="choices" id="levels">
+<button class="choice active" data-v="easy">EASY</button><button class="choice" data-v="medium">MEDIUM</button><button class="choice" data-v="hard">HARD</button></div></div>
+<div class="box"><h3>LOKASI</h3><div class="choices" id="maps"><button class="choice active" data-v="villa">VILLA TERLANTAR</button><button class="choice" data-v="forest">HUTAN BAMBU</button><button class="choice" data-v="school">SEKOLAH TUA</button></div></div>
+<div class="box"><h3>HANTU NUSANTARA</h3><div class="mon"><div class="m">♙<b>KUNTILANAK</b></div><div class="m">▣<b>POCONG</b></div><div class="m">♟<b>GENDERUWO</b></div><div class="m">♨<b>WEWE GOMBEL</b></div></div></div>
+<div class="box"><h3>FITUR</h3><div class="choices"><button class="choice active" id="snd">🔊 SOUND</button><button class="choice active" id="scare">⚡ JUMPSCARE</button></div></div>
+</div>
+<div class="foot"><div class="tip">WASD / ARROW = jalan • SHIFT = lari • E = buka pintu • P = pause<br>HP habis atau kewarasan 0 = game over.</div><button class="btn" id="start">START ADVENTURE</button></div>
+</div></section>
+
+<section id="game" class="page"><div class="game"><canvas id="cv"></canvas>
+<div class="hud"><div>SEGEL <b id="seal">0/6</b> • SANITY <b id="sanity">100</b> • TIME <b id="time">00:00</b></div><div>MODE <b id="mode">EASY</b> • PINTU <b id="door">LOCKED</b></div></div>
+<div class="touch"><div class="dpad"><button class="u" data-k="ArrowUp">▲</button><button class="l" data-k="ArrowLeft">◀</button><button class="d" data-k="ArrowDown">▼</button><button class="r" data-k="ArrowRight">▶</button></div><div class="act"><button data-k="Shift">RUN</button><button data-k="e">USE</button></div></div>
+<div class="overlay" id="ov"><div class="dialog"><h2 id="dt">PAUSED</h2><p id="dp">Dunia berhenti, tapi sesuatu mungkin masih bergerak.</p><div class="row"><button class="btn" id="resume">RESUME</button><button class="btn" id="retry">RETRY</button><button class="btn" id="menu">MENU</button></div></div></div>
+</div></section>
+
+<script>
+const $=s=>document.querySelector(s), pages=[$('#title'),$('#menu'),$('#game')];
+function page(x){pages.forEach(p=>p.classList.remove('on'));x.classList.add('on')}
+$('#goMenu').onclick=()=>page($('#menu'));
+let opt={level:'easy',map:'villa',sound:true,scare:true};
+document.querySelectorAll('#levels .choice').forEach(b=>b.onclick=()=>{document.querySelectorAll('#levels .choice').forEach(x=>x.classList.remove('active'));b.classList.add('active');opt.level=b.dataset.v});
+document.querySelectorAll('#maps .choice').forEach(b=>b.onclick=()=>{document.querySelectorAll('#maps .choice').forEach(x=>x.classList.remove('active'));b.classList.add('active');opt.map=b.dataset.v});
+$('#snd').onclick=()=>{opt.sound=!opt.sound;$('#snd').classList.toggle('active',opt.sound);$('#snd').textContent=opt.sound?'🔊 SOUND':'🔇 SILENT'};
+$('#scare').onclick=()=>{opt.scare=!opt.scare;$('#scare').classList.toggle('active',opt.scare);$('#scare').textContent=opt.scare?'⚡ JUMPSCARE':'⚡ NO FLASH'};
+
+const cv=$('#cv'),ctx=cv.getContext('2d');let W,H,game,keys={},last=0;
+function resize(){W=innerWidth;H=innerHeight;cv.width=W*devicePixelRatio;cv.height=H*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}addEventListener('resize',resize);resize();
+const C={easy:{sp:42,dr:1,time:240,n:3,fog:.22},medium:{sp:58,dr:1.5,time:190,n:5,fog:.36},hard:{sp:76,dr:2.1,time:150,n:7,fog:.52}};
+const maps={villa:'#15161a',forest:'#0e1912',school:'#15151b'};
+const rand=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),D=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+let audio;
+function beep(f=100,d=.12){if(!opt.sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();let o=audio.createOscillator(),g=audio.createGain();o.frequency.value=f;o.type='sawtooth';g.gain.value=.025;o.connect(g);g.connect(audio.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+d);o.stop(audio.currentTime+d)}catch(e){}}
+function start(){
+ page($('#game'));resize();let c=C[opt.level];game={t:0,seal:0,san:100,end:false,paused:false,last:0,
+ p:{x:250,y:900,st:100},door:{x:1950,y:160},S:[],E:[],flash:0};
+ [[500,250],[900,400],[1350,250],[1700,600],[1200,1000],[550,1100]].forEach((p,i)=>game.S.push({x:p[0],y:p[1],a:i,col:0}));
+ let names=['KUNTILANAK','POCONG','GENDERUWO','WEWE GOMBEL'];
+ for(let i=0;i<c.n;i++){let e;do{e={x:rand(450,1850),y:rand(180,1120),type:i%4,ph:rand(0,7)}}while(D(e,game.p)<430);game.E.push(e)}
+ beep(45,.5);hud()
+}
+$('#start').onclick=start;
+function hud(){if(!game)return;$('#seal').textContent=game.seal+'/6';$('#sanity').textContent=Math.ceil(Math.max(0,game.san));let q=Math.floor(game.t),m=String(q/60|0).padStart(2,'0'),s=String(q%60).padStart(2,'0');$('#time').textContent=m+':'+s;$('#mode').textContent=opt.level.toUpperCase();$('#door').textContent=game.seal>=6?'OPEN':'LOCKED'}
+function end(win,title,text){game.end=true;$('#dt').textContent=title;$('#dp').textContent=text;$('#resume').style.display='none';$('#ov').classList.add('show');beep(win?500:70,.4)}
+$('#resume').onclick=()=>{game.paused=false;$('#ov').classList.remove('show')};
+$('#retry').onclick=()=>{$('#ov').classList.remove('show');start()};
+$('#menu').onclick=()=>{$('#ov').classList.remove('show');page($('#menu'))};
+
+function update(dt){
+ if(!game||game.paused||game.end)return;let c=C[opt.level],p=game.p;
+ let x=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0),y=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0),run=keys.Shift&&(x||y)&&p.st>2;
+ if(x||y){let l=Math.hypot(x,y);x/=l;y/=l}let sp=run?235:145;p.x=clamp(p.x+x*sp*dt,45,2155);p.y=clamp(p.y+y*sp*dt,45,1255);p.st=clamp(p.st+(run?-40:24)*dt,0,100);game.t+=dt;
+ game.S.forEach(s=>{if(!s.col&&D(p,s)<42){s.col=1;game.seal++;game.san=Math.min(100,game.san+8);beep(430,.12)}});
+ game.E.forEach(e=>{let dx=p.x-e.x,dy=p.y-e.y,d=Math.hypot(dx,dy)||1,follow=d<430?1:.18;e.x+=dx/d*c.sp*follow*dt;e.y+=dy/d*c.sp*follow*dt;if(d<220)game.san-=c.dr*dt;if(d<90&&game.t-game.last>4){game.last=game.t;if(opt.scare)game.flash=.7;beep(55,.25)}});
+ game.san-=.04*dt;if(game.t>c.time)return end(0,'WAKTU HABIS','Kabut menutup jalan keluar.');
+ if(game.san<=0)return end(0,'KEHILANGAN KESADARAN','Kamu tersesat terlalu lama di dalam wisma.');
+ if(game.seal>=6&&D(p,game.door)<75&&(keys.e||keys.E))return end(1,'KAMU SELAMAT','Pintu terbuka. Kamu berhasil keluar dari Wisma Kelam.');
+ hud()
+}
+function mapDraw(t){
+ let p=game.p,c= C[opt.level],camX=p.x-W/2,camY=p.y-H/2;ctx.fillStyle=maps[opt.map];ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(-camX,-camY);
+ ctx.fillStyle='#202127';ctx.strokeStyle='#24252b';ctx.lineWidth=95;ctx.beginPath();ctx.moveTo(80,950);ctx.bezierCurveTo(700,700,900,900,1250,620);ctx.bezierCurveTo(1550,430,1800,500,2100,160);ctx.stroke();
+ if(opt.map==='villa'){ctx.fillStyle='#222329';ctx.fillRect(300,120,650,390);ctx.fillStyle='#0b0c10';ctx.fillRect(370,190,120,90);ctx.fillRect(570,190,120,90);ctx.fillRect(770,190,120,90);ctx.fillStyle='#14151a';ctx.fillRect(590,360,80,150)}
+ if(opt.map==='school'){ctx.fillStyle='#24252b';ctx.fillRect(350,180,800,370);for(let i=0;i<5;i++){ctx.fillStyle='#0b0c10';ctx.fillRect(410+i*145,250,95,90)}ctx.fillRect(680,400,120,150)}
+ if(opt.map==='forest'){for(let i=0;i<35;i++){let x=(i*211+80)%2100,y=(i*149+50)%1100;ctx.fillStyle='#2a3729';ctx.fillRect(x,y,13,100);ctx.fillStyle='#0a160c';ctx.beginPath();ctx.arc(x,y,50,0,7);ctx.fill()}}
+ for(let i=0;i<130;i++){let x=(i*137)%2100+40,y=(i*83)%1200+40;ctx.fillStyle=i%2?'#1b1c21':'#222329';ctx.fillRect(x,y,22,6)}
+ game.S.forEach(s=>{if(s.col)return;let z=1+Math.sin(t*.006+s.a)*.15;ctx.save();ctx.translate(s.x,s.y);ctx.scale(z,z);ctx.strokeStyle='#c52c44';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,15,0,7);ctx.stroke();ctx.fillStyle='#e1d2b5';ctx.font='18px serif';ctx.textAlign='center';ctx.fillText('✦',0,6);ctx.restore()});
+ ctx.save();ctx.translate(game.door.x,game.door.y);ctx.fillStyle=game.seal>=6?'#42202a':'#17171b';ctx.fillRect(-40,-58,80,116);ctx.strokeStyle=game.seal>=6?'#c12e48':'#555';ctx.lineWidth=5;ctx.strokeRect(-40,-58,80,116);ctx.fillStyle='#ddd';ctx.font='9px Arial';ctx.textAlign='center';ctx.fillText(game.seal>=6?'EXIT':'LOCKED',0,78);ctx.restore();
+ game.E.forEach(e=>ghost(e,t));player(p,t);ctx.restore();
+}
+function ghost(e,t){
+ ctx.save();ctx.translate(e.x,e.y+Math.sin(t*.004+e.ph)*5);
+ if(e.type===0){ctx.fillStyle='#eee';ctx.beginPath();ctx.moveTo(0,-55);ctx.quadraticCurveTo(-32,-35,-28,35);ctx.lineTo(-42,55);ctx.lineTo(42,55);ctx.lineTo(28,35);ctx.quadraticCurveTo(32,-35,0,-55);ctx.fill();ctx.fillStyle='#111';ctx.beginPath();ctx.arc(0,-33,20,0,7);ctx.fill();eyes()}
+ if(e.type===1){ctx.fillStyle='#bbb';ctx.fillRect(-25,-48,50,95);ctx.beginPath();ctx.moveTo(-25,-48);ctx.lineTo(0,-72);ctx.lineTo(25,-48);ctx.fill();ctx.fillStyle='#111';ctx.beginPath();ctx.arc(0,-33,18,0,7);ctx.fill();eyes()}
+ if(e.type===2){ctx.fillStyle='#29212e';ctx.beginPath();ctx.arc(0,-25,36,0,7);ctx.fill();ctx.fillRect(-45,0,90,65);ctx.fillStyle='#d54a54';ctx.fillRect(-23,-13,10,10);ctx.fillRect(13,-13,10,10)}
+ if(e.type===3){ctx.fillStyle='#5b473d';ctx.beginPath();ctx.arc(0,-22,33,0,7);ctx.fill();ctx.fillRect(-44,0,88,68);ctx.fillStyle='#121117';ctx.beginPath();ctx.arc(0,-22,22,0,7);ctx.fill();eyes()}
+ ctx.restore()
+}
+function eyes(){ctx.fillStyle='#eee';ctx.fillRect(-10,-8,5,8);ctx.fillRect(5,-8,5,8);ctx.fillStyle='#111';ctx.fillRect(-8,-6,2,4);ctx.fillRect(7,-6,2,4)}
+function player(p,t){ctx.save();ctx.translate(p.x,p.y);ctx.fillStyle='#0008';ctx.beginPath();ctx.ellipse(0,25,22,7,0,0,7);ctx.fill();ctx.fillStyle='#36516a';ctx.fillRect(-15,-4,30,29);ctx.fillStyle='#d5b18e';ctx.fillRect(-13,-28,26,23);ctx.fillStyle='#20242a';ctx.fillRect(-15,-31,30,10);ctx.fillStyle='#eee';ctx.fillRect(-8,-20,4,5);ctx.fillRect(4,-20,4,5);ctx.fillStyle='#111';ctx.fillRect(-13,25,10,13);ctx.fillRect(3,25,10,13);ctx.restore()}
+function draw(t){if(!game)return;mapDraw(t);let f=ctx.createRadialGradient(W/2,H/2,70,W/2,H/2,Math.max(W,H)*.7);f.addColorStop(0,'transparent');f.addColorStop(1,`rgba(0,0,0,${C[opt.level].fog+(100-game.san)/300})`);ctx.fillStyle=f;ctx.fillRect(0,0,W,H);if(game.flash>0){game.flash-=.05;ctx.fillStyle=`rgba(230,235,240,${game.flash})`;ctx.fillRect(0,0,W,H)}}
+addEventListener('keydown',e=>{keys[e.key]=1;keys[e.key.toLowerCase()]=1;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();if(e.key.toLowerCase()==='p'&&game&&!game.end){game.paused=!game.paused;$('#ov').classList.toggle('show',game.paused);$('#resume').style.display=game.paused?'inline-block':'none';$('#dt').textContent='PAUSED'}});addEventListener('keyup',e=>{keys[e.key]=0;keys[e.key.toLowerCase()]=0});
+document.querySelectorAll('.touch button').forEach(b=>{let k=b.dataset.k,on=e=>{e.preventDefault();keys[k]=1;keys[k.toLowerCase()]=1},off=e=>{e.preventDefault();keys[k]=0;keys[k.toLowerCase()]=0};b.addEventListener('touchstart',on,{passive:false});b.addEventListener('touchend',off,{passive:false});b.addEventListener('mousedown',on);b.addEventListener('mouseup',off)});
+function loop(t){let dt=Math.min(.035,(t-last||16)/1000);last=t;if(game){update(dt);draw(t)}requestAnimationFrame(loop)}requestAnimationFrame(loop);
+</script>
+</body></html>
