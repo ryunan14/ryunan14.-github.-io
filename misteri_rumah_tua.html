@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Misteri Rumah Tua</title>
+<style>
+:root{--bg:#090b12;--panel:#151a27;--panel2:#20283a;--text:#f4f1de;--accent:#d6b36a;--danger:#e85d5d;--good:#75d69c}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#22283b 0,#090b12 65%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}
+button{font:inherit}
+#app{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:12px}
+.screen{width:min(1100px,100%);min-height:calc(100vh - 24px);background:linear-gradient(145deg,#101521,#090c13);border:1px solid #3a4257;border-radius:22px;box-shadow:0 20px 70px #000b;overflow:hidden;position:relative}
+.hidden{display:none!important}
+.menu{min-height:calc(100vh - 24px);display:flex;align-items:center;justify-content:center;text-align:center;padding:28px;background:linear-gradient(#0007,#0009),radial-gradient(circle at 50% 25%,#39435b,#101521 55%,#06070b)}
+.logo{font-size:clamp(42px,9vw,86px);font-weight:1000;letter-spacing:4px;text-shadow:0 5px 0 #000,0 0 28px #a68a55}
+.subtitle{color:#c9c5b4;margin:-4px auto 25px;max-width:650px}
+.menuCard{max-width:760px;width:100%}
+.difficulties{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0}
+.diff{background:#151a27;color:#eee;border:1px solid #49536c;border-radius:14px;padding:11px 18px;cursor:pointer}
+.diff.active{background:#8d6e37;border-color:#e7c77c}
+.mainBtn{background:linear-gradient(#d6b36a,#9a7739);color:#17130b;border:0;border-radius:15px;padding:14px 28px;font-weight:900;cursor:pointer;box-shadow:0 7px 0 #5c4625;margin:5px}
+.smallBtn{background:#20283a;color:#eee;border:1px solid #48536b;border-radius:10px;padding:8px 12px;cursor:pointer}
+.help{font-size:13px;color:#aaa;margin-top:20px}
+#game{height:calc(100vh - 24px);display:flex;flex-direction:column}
+#hud{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px;background:#111725;border-bottom:1px solid #343d53}
+.stat{background:#20283a;border:1px solid #3d4860;border-radius:10px;padding:7px 10px;font-size:13px}
+#roomTitle{font-weight:900;color:#e3c67f;margin-right:auto}
+#gameArea{flex:1;display:grid;grid-template-columns:1fr 190px;gap:10px;padding:10px;min-height:0}
+#worldWrap{position:relative;min-height:0;background:#05070a;border:1px solid #343b4b;border-radius:15px;overflow:hidden}
+#world{position:absolute;inset:0}
+#canvas{width:100%;height:100%;display:block;image-rendering:auto}
+#overlayMessage{position:absolute;left:50%;top:15px;transform:translateX(-50%);background:#080a0ee8;border:1px solid #5d6270;border-radius:12px;padding:9px 14px;max-width:85%;text-align:center;font-size:13px;pointer-events:none}
+#side{background:#111725;border:1px solid #343d53;border-radius:15px;padding:10px;overflow:auto}
+.sideTitle{font-weight:900;margin:4px 0 8px;color:#e0c47d}
+#inventory{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.item{background:#252d40;border:1px solid #48546c;border-radius:9px;padding:6px 8px;font-size:12px}
+#mini{width:100%;aspect-ratio:1;border:1px solid #4a5365;border-radius:10px;background:#070a0f;margin-bottom:10px}
+#objective{font-size:13px;line-height:1.45;color:#c9c9c5}
+#touch{position:absolute;bottom:14px;left:14px;display:none;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px);gap:5px;z-index:5}
+.touchBtn{border:1px solid #69748b;background:#151c2bd9;color:#fff;border-radius:12px;font-size:20px;touch-action:none}
+#interact{position:absolute;bottom:20px;right:20px;z-index:5;border:1px solid #8d7a4e;background:#1b1b19e8;color:#f6dfaa;border-radius:50%;width:72px;height:72px;font-weight:900;touch-action:none}
+.modal{position:absolute;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modalBox{background:#141a27;border:1px solid #4b566e;border-radius:18px;max-width:560px;width:100%;padding:24px;text-align:center;box-shadow:0 20px 70px #000}
+.modalBox h2{margin-top:0;color:#e3c67f}
+.modalBox p{line-height:1.6;color:#d2d2ce}
+.choiceRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.choice{padding:10px 15px;border-radius:11px;background:#242d40;color:#fff;border:1px solid #56627a;cursor:pointer}
+@media(max-width:800px){
+ #gameArea{grid-template-columns:1fr}
+ #side{display:none}
+ #touch{display:grid}
+ #game{height:calc(100vh - 24px)}
+ .stat{font-size:11px;padding:6px 8px}
+ #roomTitle{width:100%;margin:0}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<section id="menu" class="screen menu">
+  <div class="menuCard">
+    <div style="font-size:48px">🏚️</div>
+    <div class="logo">MISTERI<br>RUMAH TUA</div>
+    <p class="subtitle">Game horor Indonesia bergaya kartun. Temukan benda misterius, pecahkan teka-teki, hindari gangguan hantu, dan cari jalan keluar.</p>
+    <div><b>Pilih tingkat kesulitan</b></div>
+    <div class="difficulties">
+      <button class="diff active" data-diff="easy">EASY<br><small>120 detik • hantu jarang</small></button>
+      <button class="diff" data-diff="normal">NORMAL<br><small>90 detik • seimbang</small></button>
+      <button class="diff" data-diff="hard">HARD<br><small>65 detik • hantu lebih aktif</small></button>
+    </div>
+    <button id="startBtn" class="mainBtn">▶ MULAI PETUALANGAN</button>
+    <button id="storyBtn" class="smallBtn">📖 Baca Intro</button>
+    <p class="help">Laptop: WASD / tombol panah • HP: tombol arah + INTERAKSI • Tekan P untuk pause</p>
+  </div>
+</section>
+
+<section id="game" class="screen hidden">
+  <div id="hud">
+    <div id="roomTitle" class="stat">LEVEL 1 — RUMAH TUA</div>
+    <div class="stat">❤️ HP: <b id="hp">3</b></div>
+    <div class="stat">⭐ Skor: <b id="score">0</b></div>
+    <div class="stat">⏱️ Waktu: <b id="time">120</b></div>
+    <button id="musicBtn" class="smallBtn">🔊 Suara ON</button>
+    <button id="pauseBtn" class="smallBtn">⏸ Pause</button>
+    <button id="restartBtn" class="smallBtn">↻ Restart</button>
+  </div>
+  <div id="gameArea">
+    <div id="worldWrap">
+      <canvas id="canvas"></canvas>
+      <div id="overlayMessage">Cari petunjuk dan gunakan INTERAKSI di dekat benda.</div>
+      <div id="touch">
+        <span></span><button class="touchBtn" data-key="up">▲</button><span></span>
+        <button class="touchBtn" data-key="left">◀</button><button class="touchBtn" data-key="down">▼</button><button class="touchBtn" data-key="right">▶</button>
+      </div>
+      <button id="interact">INTERAKSI</button>
+      <div id="modal" class="modal hidden">
+        <div class="modalBox">
+          <h2 id="modalTitle">Pesan</h2>
+          <p id="modalText"></p>
+          <div id="modalChoices" class="choiceRow"></div>
+          <button id="modalClose" class="mainBtn">Lanjut</button>
+        </div>
+      </div>
+    </div>
+    <aside id="side">
+      <div class="sideTitle">🎒 INVENTORI</div>
+      <div id="inventory"><span class="item">Kosong</span></div>
+      <div class="sideTitle">🗺️ MINI MAP</div>
+      <canvas id="mini" width="180" height="180"></canvas>
+      <div class="sideTitle">🎯 MISI</div>
+      <div id="objective">Masuk ke rumah dan cari petunjuk.</div>
+    </aside>
+  </div>
+</section>
+</div>
+
+<script>
+"use strict";
+
+const canvas=document.getElementById("canvas"),ctx=canvas.getContext("2d");
+const mini=document.getElementById("mini"),mctx=mini.getContext("2d");
+const menu=document.getElementById("menu"),game=document.getElementById("game");
+const hpEl=document.getElementById("hp"),scoreEl=document.getElementById("score"),timeEl=document.getElementById("time");
+const roomTitle=document.getElementById("roomTitle"),objectiveEl=document.getElementById("objective"),inventoryEl=document.getElementById("inventory");
+const overlay=document.getElementById("overlayMessage"),modal=document.getElementById("modal"),modalTitle=document.getElementById("modalTitle"),modalText=document.getElementById("modalText"),modalChoices=document.getElementById("modalChoices");
+let W=900,H=520,keys={},selectedDiff="easy",running=false,paused=false,last=0,acc=0,audioOn=true,audioCtx=null;
+let level=1,hp=3,score=0,timeLeft=120,inventory=[],checkpoint=1,near=null,eventCooldown=0,flash=0;
+const difficulty={easy:{time:120,ghostRate:.22,ghostSpeed:45},normal:{time:90,ghostRate:.38,ghostSpeed:60},hard:{time:65,ghostRate:.58,ghostSpeed:78}};
+
+const levels=[
+ {name:"RUMAH TUA",bg:"#171822",floor:"#252634",objective:"Cari KUNCI LAMA di ruang depan.",item:"Kunci Lama",itemEmoji:"🗝️",itemPos:[.76,.48],exit:[.93,.5],ghosts:1,clue:"Di balik lukisan tua terdapat sesuatu yang berkilau...",hint:"Dekati benda bercahaya lalu tekan INTERAKSI."},
+ {name:"KAMAR GELAP",bg:"#10121b",floor:"#202433",objective:"Temukan LENTERA untuk menyalakan ruangan.",item:"Lentera",itemEmoji:"🏮",itemPos:[.68,.25],exit:[.94,.82],ghosts:1,clue:"Cahaya kecil bisa mengusir rasa takut. Tapi jangan terlalu lama diam.",hint:"Cari lentera. Beberapa benda akan berpindah tempat!"},
+ {name:"LORONG MISTERIUS",bg:"#0d1017",floor:"#1d202b",objective:"Pecahkan teka-teki angka untuk membuka pintu.",item:"Kode 314",itemEmoji:"🔢",itemPos:[.18,.78],exit:[.95,.18],ghosts:2,clue:"Angka pada jam, bingkai, dan papan kayu membentuk sebuah kode.",hint:"Gunakan INTERAKSI pada tiga petunjuk untuk menemukan kode."},
+ {name:"GUDANG",bg:"#15120f",floor:"#29221b",objective:"Temukan KUNCI BESI dan hindari penjaga gudang.",item:"Kunci Besi",itemEmoji:"🔑",itemPos:[.22,.22],exit:[.92,.78],ghosts:2,clue:"Kotak tua menyimpan kunci terakhir.",hint:"Periksa kotak dan hindari hantu kartun."},
+ {name:"JALAN KELUAR",bg:"#101820",floor:"#24333a",objective:"Capai gerbang sebelum waktu habis.",item:"",itemEmoji:"",itemPos:[.5,.5],exit:[.94,.5],ghosts:2,clue:"Gerbang sudah dekat. Berani keluar?",hint:"Berjalan ke gerbang di sisi kanan."}
+];
+
+let player={x:.12,y:.5,r:16,speed:190};
+let objects=[],ghosts=[],particles=[];
+
+function resize(){
+ const r=canvas.getBoundingClientRect(); W=Math.max(320,r.width); H=Math.max(260,r.height); canvas.width=W*devicePixelRatio;canvas.height=H*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+}
+window.addEventListener("resize",resize); resize();
+
+function beep(freq=440,dur=.08,type="sine"){
+ if(!audioOn)return;
+ try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.035,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur)}catch(e){}
+}
+function showModal(title,text,choices=[]){
+ paused=true;modalTitle.textContent=title;modalText.textContent=text;modalChoices.innerHTML="";
+ choices.forEach(c=>{let b=document.createElement("button");b.className="choice";b.textContent=c.text;b.onclick=()=>{c.fn();modal.classList.add("hidden");paused=false};modalChoices.appendChild(b)});
+ document.getElementById("modalClose").style.display=choices.length?"none":"inline-block";modal.classList.remove("hidden");
+}
+document.getElementById("modalClose").onclick=()=>{modal.classList.add("hidden");paused=false};
+document.getElementById("storyBtn").onclick=()=>showModal("📖 INTRO","Di sebuah desa, kamu menemukan rumah tua yang sudah lama kosong. Saat masuk karena penasaran, pintu tiba-tiba terkunci. Cari benda-benda misterius, pecahkan teka-teki, dan temukan jalan keluar sebelum waktu habis.");
+document.querySelectorAll(".diff").forEach(b=>b.onclick=()=>{document.querySelectorAll(".diff").forEach(x=>x.classList.remove("active"));b.classList.add("active");selectedDiff=b.dataset.diff});
+document.getElementById("startBtn").onclick=startGame;
+document.getElementById("pauseBtn").onclick=()=>togglePause();
+document.getElementById("restartBtn").onclick=()=>{if(confirm("Mulai ulang dari Level 1?"))startGame()};
+document.getElementById("musicBtn").onclick=()=>{audioOn=!audioOn;document.getElementById("musicBtn").textContent=audioOn?"🔊 Suara ON":"🔇 Suara OFF";if(audioOn)beep(600,.1)};
+
+function startGame(){
+ menu.classList.add("hidden");game.classList.remove("hidden");level=1;hp=3;score=0;inventory=[];checkpoint=1;timeLeft=difficulty[selectedDiff].time;running=true;paused=false;loadLevel(1);beep(330,.12);
+}
+function loadLevel(n){
+ level=n;const d=levels[n-1];player={x:.1,y:.5,r:16,speed:190};near=null;eventCooldown=1.5;flash=0;objects=[];ghosts=[];particles=[];
+ roomTitle.textContent=`LEVEL ${n} — ${d.name}`;objectiveEl.textContent=d.objective;
+ if(d.item)objects.push({type:"item",x:d.itemPos[0],y:d.itemPos[1],name:d.item,emoji:d.itemEmoji,active:true});
+ // puzzle objects
+ if(n===1)objects.push({type:"clue",x:.48,y:.28,text:d.clue});
+ if(n===2)objects.push({type:"clue",x:.35,y:.72,text:d.clue});
+ if(n===3){objects.push({type:"clue",x:.32,y:.25,text:"Jam tua menunjukkan 3."});objects.push({type:"clue",x:.55,y:.68,text:"Ada tiga tanda pada papan kayu."});objects.push({type:"clue",x:.75,y:.3,text:"Bingkai kecil bertuliskan 1."});}
+ if(n===4)objects.push({type:"box",x:.5,y:.48,text:"Kotak terkunci. Coba periksa."});
+ for(let i=0;i<d.ghosts;i++)spawnGhost(i);
+ updateInventory();drawMini();overlay.textContent=d.hint;
+}
+function spawnGhost(i){
+ let g={x:.25+Math.random()*.65,y:.18+Math.random()*.64,r:18,speed:difficulty[selectedDiff].ghostSpeed,active:true,wob:Math.random()*7};
+ if(Math.hypot(g.x-player.x,g.y-player.y)<.25){g.x=.8;g.y=.15}
+ ghosts.push(g);
+}
+function updateInventory(){
+ inventoryEl.innerHTML=inventory.length?inventory.map(x=>`<span class="item">${x}</span>`).join(""):'<span class="item">Kosong</span>';
+}
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+function worldToPx(x,y){return{x:x*W,y:y*H}}
+function interact(){
+ if(!running||paused)return;
+ if(near){
+  if(near.type==="item"){
+   if(near.name==="Kode 314"){
+    showModal("🔐 TEKA-TEKI","Masukkan kode berdasarkan petunjuk: jam menunjukkan 3, papan memiliki 3 tanda, dan bingkai bertuliskan 1.",[
+      {text:"314",fn:()=>{inventory.push("Kode 314");score+=250;removeObject(near);updateInventory();objectiveEl.textContent="Kode benar! Pergi ke pintu keluar." ;beep(880,.2)}} ,
+      {text:"331",fn:()=>{hp--;score=Math.max(0,score-50);beep(130,.2);if(hp<=0)gameOver();}}
+    ]);return;
+   }
+   inventory.push(near.name);score+=100;removeObject(near);updateInventory();beep(700,.12);overlay.textContent=`Kamu menemukan ${near.name}!`;
+   objectiveEl.textContent=level<5?`Cari jalan keluar Level ${level}.`:"Capai gerbang!";
+  } else if(near.type==="clue"){
+    showModal("🔎 PETUNJUK",near.text);score+=30;beep(520,.08);
+  } else if(near.type==="box"){
+    if(inventory.includes("Lentera")||level===4){showModal("📦 KOTAK TUA","Kamu menemukan Kunci Besi di dalam kotak!");inventory.push("Kunci Besi");score+=150;removeObject(near);updateInventory();beep(900,.15)}
+    else showModal("📦 KOTAK TUA","Terlalu gelap untuk melihat isinya. Temukan Lentera terlebih dahulu.");
+  }
+ } else {
+  overlay.textContent="Tidak ada benda penting di dekatmu.";
+  beep(220,.05);
+ }
+}
+document.getElementById("interact").onclick=interact;
+
+function removeObject(o){o.active=false}
+function canExit(){
+ if(level===1)return inventory.includes("Kunci Lama");
+ if(level===2)return inventory.includes("Lentera");
+ if(level===3)return inventory.includes("Kode 314");
+ if(level===4)return inventory.includes("Kunci Besi");
+ return true;
+}
+function nextLevel(){
+ if(level<5){checkpoint=level+1;score+=200;loadLevel(level+1);beep(500,.15);showModal(`LEVEL ${level} SELESAI!`,`Checkpoint tersimpan. Skor bertambah 200. Bersiap menuju ${levels[level].name}.`)}
+ else win();
+}
+function hurt(){
+ hp--;flash=.5;score=Math.max(0,score-80);beep(100,.22,"square");
+ player.x=Math.max(.05,player.x-.08);player.y=Math.max(.1,Math.min(.9,player.y));
+ if(hp<=0)gameOver();
+}
+function gameOver(){
+ running=false;showModal("💤 GAME OVER",`Kamu kehabisan HP. Skor akhir: ${score}. Coba lagi dari checkpoint atau mulai ulang.`,[
+  {text:"Ulangi Level",fn:()=>{running=true;hp=2;timeLeft=25;loadLevel(level)}},
+  {text:"Mulai Lagi",fn:()=>startGame()}
+ ]);
+}
+function win(){
+ running=false;let ending=score>=850?"ENDING TERBAIK":"ENDING SELAMAT";
+ showModal(`🏆 ${ending}`,`Kamu berhasil keluar dari rumah tua! Skor akhir: ${score}. ${score>=850?"Kamu menemukan semua petunjuk dan berhasil keluar dengan tenang.":"Kamu berhasil selamat, meski masih banyak misteri yang belum terungkap."}`,[{text:"Main Lagi",fn:()=>startGame()}]);
+}
+function togglePause(){if(!running)return;paused=!paused;document.getElementById("pauseBtn").textContent=paused?"▶ Lanjut":"⏸ Pause";overlay.textContent=paused?"GAME DI-PAUSE":"Permainan dilanjutkan."}
+
+window.addEventListener("keydown",e=>{
+ keys[e.key.toLowerCase()]=true;
+ if(["arrowup","arrowdown","arrowleft","arrowright"," "].includes(e.key.toLowerCase()))e.preventDefault();
+ if(e.key.toLowerCase()==="e")interact();
+ if(e.key.toLowerCase()==="p")togglePause();
+});
+window.addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
+
+document.querySelectorAll(".touchBtn").forEach(b=>{
+ const k=b.dataset.key;
+ const map={up:"arrowup",down:"arrowdown",left:"arrowleft",right:"arrowright"};
+ const down=e=>{e.preventDefault();keys[map[k]]=true};const up=e=>{e.preventDefault();keys[map[k]]=false};
+ b.addEventListener("pointerdown",down);b.addEventListener("pointerup",up);b.addEventListener("pointerleave",up);b.addEventListener("pointercancel",up);
+});
+
+function update(dt){
+ if(!running||paused)return;
+ timeLeft-=dt;if(timeLeft<=0){timeLeft=0;gameOver();return}
+ const dx=(keys["d"]||keys["arrowright"]?1:0)-(keys["a"]||keys["arrowleft"]?1:0);
+ const dy=(keys["s"]||keys["arrowdown"]?1:0)-(keys["w"]||keys["arrowup"]?1:0);
+ let len=Math.hypot(dx,dy)||1;player.x+=dx/len*player.speed/W*dt;player.y+=dy/len*player.speed/H*dt;
+ player.x=Math.max(.04,Math.min(.96,player.x));player.y=Math.max(.07,Math.min(.93,player.y));
+ near=null;
+ for(const o of objects)if(o.active&&Math.hypot(o.x-player.x,o.y-player.y)<.11){near=o;break}
+ ghosts.forEach(g=>{
+  g.wob+=dt*3;
+  const dx=player.x-g.x,dy=player.y-g.y,d=Math.hypot(dx,dy)||1;
+  const rate=(d<.34?1:.35);
+  g.x+=dx/d*g.speed/W*dt*rate;g.y+=dy/d*g.speed/H*dt*rate;
+  if(d<.045&&eventCooldown<=0){hurt();eventCooldown=1.2}
+ });
+ eventCooldown-=dt;flash=Math.max(0,flash-dt);
+ // random harmless scare
+ if(Math.random()<difficulty[selectedDiff].ghostRate*dt*.12){overlay.textContent="👻 Suara langkah terdengar dari arah lain...";beep(180,.06)}
+ if(level===5&&player.x>.89&&canExit())nextLevel();
+ timeEl.textContent=Math.ceil(timeLeft);hpEl.textContent=hp;scoreEl.textContent=score;
+ if(near)overlay.textContent=near.type==="item"?"✨ Ada benda penting di dekatmu! Tekan INTERAKSI.":near.type==="clue"?"🔎 Ada petunjuk. Tekan INTERAKSI.":"📦 Ada sesuatu di sini. Tekan INTERAKSI.";
+ drawMini();
+}
+
+function draw(){
+ ctx.clearRect(0,0,W,H);const d=levels[level-1];
+ // background and floor
+ ctx.fillStyle=d.bg;ctx.fillRect(0,0,W,H);
+ ctx.fillStyle=d.floor;ctx.fillRect(W*.04,H*.07,W*.92,H*.86);
+ // room tiles
+ ctx.strokeStyle="#ffffff0b";ctx.lineWidth=1;
+ for(let x=.04;x<.96;x+=.06){ctx.beginPath();ctx.moveTo(x*W,H*.07);ctx.lineTo(x*W,H*.93);ctx.stroke()}
+ for(let y=.07;y<.93;y+=.06){ctx.beginPath();ctx.moveTo(W*.04,y*H);ctx.lineTo(W*.96,y*H);ctx.stroke()}
+ // Indonesian house decor
+ ctx.fillStyle="#43392d";ctx.fillRect(W*.07,H*.13,W*.17,H*.04);
+ ctx.fillStyle="#8d6e37";ctx.fillRect(W*.1,H*.105,W*.11,H*.025);
+ ctx.fillStyle="#15161c";ctx.fillRect(W*.82,H*.12,W*.09,H*.17);
+ ctx.fillStyle="#d7b85e";ctx.fillRect(W*.845,H*.15,W*.04,H*.04);
+ // exit
+ ctx.fillStyle=canExit()?"#75d69c":"#6b3f3f";ctx.fillRect(W*.91,H*.38,W*.04,H*.24);
+ ctx.fillStyle="#ddd";ctx.font="bold 12px system-ui";ctx.textAlign="center";ctx.fillText(level===5?"GERBANG":"PINTU",W*.93,H*.35);
+ // objects
+ objects.forEach(o=>{if(!o.active)return;let p=worldToPx(o.x,o.y);ctx.save();ctx.shadowBlur=18;ctx.shadowColor="#e9d27b";ctx.fillStyle="#e9d27b";ctx.beginPath();ctx.arc(p.x,p.y,12,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.font="22px serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(o.emoji||"❔",p.x,p.y);ctx.restore()});
+ // ghosts cartoon
+ ghosts.forEach(g=>{let p=worldToPx(g.x,g.y);ctx.save();ctx.translate(p.x,p.y+Math.sin(g.wob)*3);ctx.fillStyle="#e7e5df";ctx.beginPath();ctx.arc(0,-3,17,Math.PI,0);ctx.lineTo(17,15);ctx.lineTo(9,10);ctx.lineTo(0,16);ctx.lineTo(-9,10);ctx.lineTo(-17,15);ctx.closePath();ctx.fill();ctx.fillStyle="#252936";ctx.beginPath();ctx.arc(-6,-3,3,0,Math.PI*2);ctx.arc(6,-3,3,0,Math.PI*2);ctx.fill();ctx.restore()});
+ // player
+ let p=worldToPx(player.x,player.y);ctx.save();ctx.translate(p.x,p.y);ctx.shadowBlur=12;ctx.shadowColor="#6fb6ff";ctx.fillStyle="#e9b27c";ctx.beginPath();ctx.arc(0,-12,9,0,Math.PI*2);ctx.fill();ctx.fillStyle="#3d5c86";ctx.fillRect(-11,-4,22,22);ctx.fillStyle="#27334a";ctx.fillRect(-10,18,-1+1,9);ctx.fillRect(2,18,8,9);ctx.fillStyle="#222";ctx.beginPath();ctx.arc(-3,-13,1.7,0,Math.PI*2);ctx.arc(4,-13,1.7,0,Math.PI*2);ctx.fill();ctx.restore();
+ // darkness vignette
+ let grad=ctx.createRadialGradient(p.x,p.y,50,p.x,p.y,Math.max(W,H)*.7);grad.addColorStop(0,"transparent");grad.addColorStop(.5,"#00000030");grad.addColorStop(1,"#000000b8");ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+ if(flash>0){ctx.fillStyle=`rgba(230,80,80,${flash*.25})`;ctx.fillRect(0,0,W,H)}
+}
+
+function drawMini(){
+ mctx.fillStyle="#070a0f";mctx.fillRect(0,0,180,180);mctx.fillStyle="#273044";mctx.fillRect(8,8,164,164);
+ mctx.strokeStyle="#4c566a";for(let i=20;i<170;i+=20){mctx.beginPath();mctx.moveTo(i,8);mctx.lineTo(i,172);mctx.stroke();mctx.beginPath();mctx.moveTo(8,i);mctx.lineTo(172,i);mctx.stroke()}
+ mctx.fillStyle="#5a3c38";mctx.fillRect(150,65,15,50);mctx.fillStyle="#e3c67f";mctx.fillRect(8,70,10,10);
+ ghosts.forEach(g=>{mctx.fillStyle="#e9e7df";mctx.beginPath();mctx.arc(g.x*180,g.y*180,4,0,Math.PI*2);mctx.fill()});
+ mctx.fillStyle="#69b8ff";mctx.beginPath();mctx.arc(player.x*180,player.y*180,5,0,Math.PI*2);mctx.fill();
+ objects.forEach(o=>{if(o.active){mctx.fillStyle="#e3c67f";mctx.beginPath();mctx.arc(o.x*180,o.y*180,3,0,Math.PI*2);mctx.fill()}});
+}
+
+function loop(t){
+ const dt=Math.min(.035,(t-last)/1000||0);last=t;update(dt);draw();requestAnimationFrame(loop)
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
